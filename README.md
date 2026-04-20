@@ -11,8 +11,7 @@
 MiniCloud is a scalable Infrastructure‑as‑a‑Service control plane that manages KVM virtual machines. It provides a secure REST API, asynchronous task processing with Celery, and persistent state in PostgreSQL. The architecture is designed for clarity, extensibility, and production readiness.
 
 ---
-
-## 📸 Screenshots
+## 📸 Visual Overview
 
 | CI/CD Pipeline | API Documentation |
 |:---:|:---:|
@@ -25,6 +24,7 @@ MiniCloud is a scalable Infrastructure‑as‑a‑Service control plane that man
 | Web UI Dashboard |
 |:---:|
 | ![Web UI](docs/images/webui.png) |
+
 ---
 
 ## 📖 Table of Contents
