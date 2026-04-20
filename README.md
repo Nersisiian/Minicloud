@@ -12,22 +12,22 @@ MiniCloud is a scalable Infrastructure‑as‑a‑Service control plane that man
 
 ---
 
-## 📸 Screenshots
+## 📸 Visual Overview
 
-### CI/CD Pipeline (GitHub Actions)
-![CI/CD](https://via.placeholder.com/800x400?text=CI+CD+Green+Build)
+### CI/CD Status (Live)
+[![CI/CD Pipeline](https://github.com/Nersisiian/Minicloud/actions/workflows/ci.yml/badge.svg)](https://github.com/Nersisiian/Minicloud/actions/workflows/ci.yml)
 
-### API Documentation (Swagger UI)
-![Swagger UI](https://via.placeholder.com/800x400?text=FastAPI+Swagger+UI)
-
-### VM Creation Workflow
-![VM Creation](https://via.placeholder.com/800x400?text=VM+Creation+Flow)
-
-### Prometheus Metrics
-![Metrics](https://via.placeholder.com/800x400?text=Prometheus+Metrics)
-
-### Web UI (React)
-![Web UI](https://via.placeholder.com/800x400?text=React+Web+UI)
+### System Architecture (Interactive)
+```mermaid
+graph TD
+    Client([Client]) --> Nginx[Nginx Reverse Proxy]
+    Nginx --> API[FastAPI Service]
+    API --> DB[(PostgreSQL)]
+    API --> Redis[(Redis)]
+    Redis --> Worker[Celery Worker]
+    Worker --> KVM[KVM Hypervisor]
+    Prometheus --> API
+    Grafana --> Prometheus
 
 ---
 
