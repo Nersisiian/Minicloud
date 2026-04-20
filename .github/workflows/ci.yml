@@ -9,7 +9,7 @@ on:
 permissions:
   contents: read
   packages: write
-  security-events: write   # Разрешение для загрузки SARIF
+  security-events: write
 
 env:
   REGISTRY: ghcr.io
@@ -58,6 +58,10 @@ jobs:
 
       - name: Install Poetry
         run: pip install poetry
+
+      # 🔥 Новый шаг: синхронизация lock-файла с pyproject.toml
+      - name: Regenerate poetry.lock (if needed)
+        run: poetry lock --no-update
 
       - name: Install dependencies
         run: poetry install --no-interaction
@@ -162,6 +166,6 @@ jobs:
           severity: 'CRITICAL,HIGH'
 
       - name: Upload SARIF to GitHub
-        uses: github/codeql-action/upload-sarif@v4   # обновлено до v4
+        uses: github/codeql-action/upload-sarif@v4
         with:
           sarif_file: 'trivy-results.sarif'
