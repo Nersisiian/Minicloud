@@ -59,9 +59,8 @@ jobs:
       - name: Install Poetry
         run: pip install poetry
 
-      # 🔥 Новый шаг: синхронизация lock-файла с pyproject.toml
-      - name: Regenerate poetry.lock (if needed)
-        run: poetry lock --no-update
+      - name: Regenerate poetry.lock
+        run: poetry lock
 
       - name: Install dependencies
         run: poetry install --no-interaction
