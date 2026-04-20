@@ -1,6 +1,8 @@
-from pydantic import BaseModel, UUID4, Field, ConfigDict
 from datetime import datetime
-from typing import Optional, Dict, Any
+from typing import Any, Dict, Optional
+
+from pydantic import UUID4, BaseModel, ConfigDict, Field
+
 from db.models.task import TaskStatus
 
 

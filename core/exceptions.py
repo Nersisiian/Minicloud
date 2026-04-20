@@ -1,5 +1,6 @@
 class MiniCloudError(Exception):
     """Base exception for MiniCloud."""
+
     pass
 
 

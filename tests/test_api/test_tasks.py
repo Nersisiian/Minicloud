@@ -1,7 +1,9 @@
 import uuid
+
 import pytest
 from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
+
 from db.models import Task, TaskStatus, User
 
 
@@ -13,7 +15,9 @@ async def test_get_task_not_found(client: AsyncClient, auth_headers: dict):
 
 
 @pytest.mark.asyncio
-async def test_get_task_success(client: AsyncClient, auth_headers: dict, test_user: User, db_session: AsyncSession):
+async def test_get_task_success(
+    client: AsyncClient, auth_headers: dict, test_user: User, db_session: AsyncSession
+):
     task = Task(
         user_id=test_user.id,
         task_type="create_vm",
@@ -32,7 +36,9 @@ async def test_get_task_success(client: AsyncClient, auth_headers: dict, test_us
 
 
 @pytest.mark.asyncio
-async def test_cannot_access_other_user_task(client: AsyncClient, auth_headers: dict, db_session: AsyncSession):
+async def test_cannot_access_other_user_task(
+    client: AsyncClient, auth_headers: dict, db_session: AsyncSession
+):
     other_user = User(username="other", hashed_password="hash")
     db_session.add(other_user)
     await db_session.commit()

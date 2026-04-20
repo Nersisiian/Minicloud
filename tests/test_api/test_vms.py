@@ -1,8 +1,10 @@
 import uuid
+from unittest.mock import patch
+
 import pytest
 from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
-from unittest.mock import patch
+
 from db.models import VM, Task, TaskStatus
 
 
@@ -13,7 +15,9 @@ async def test_create_vm_unauthorized(client: AsyncClient):
 
 
 @pytest.mark.asyncio
-async def test_create_vm_success(client: AsyncClient, auth_headers: dict, db_session: AsyncSession):
+async def test_create_vm_success(
+    client: AsyncClient, auth_headers: dict, db_session: AsyncSession
+):
     with patch("core.orchestrator.VMOrchestrator.request_vm_creation") as mock_req:
         mock_task = Task(
             id=uuid.uuid4(),
@@ -48,7 +52,9 @@ async def test_get_vm_not_found(client: AsyncClient, auth_headers: dict):
 
 
 @pytest.mark.asyncio
-async def test_get_vm_success(client: AsyncClient, auth_headers: dict, test_user: User, db_session: AsyncSession):
+async def test_get_vm_success(
+    client: AsyncClient, auth_headers: dict, test_user: User, db_session: AsyncSession
+):
     vm = VM(
         user_id=test_user.id,
         name="existing-vm",
@@ -69,7 +75,9 @@ async def test_get_vm_success(client: AsyncClient, auth_headers: dict, test_user
 
 
 @pytest.mark.asyncio
-async def test_delete_vm_success(client: AsyncClient, auth_headers: dict, test_user: User, db_session: AsyncSession):
+async def test_delete_vm_success(
+    client: AsyncClient, auth_headers: dict, test_user: User, db_session: AsyncSession
+):
     vm = VM(
         user_id=test_user.id,
         name="to-delete",
@@ -96,7 +104,9 @@ async def test_delete_vm_success(client: AsyncClient, auth_headers: dict, test_u
 
 
 @pytest.mark.asyncio
-async def test_access_other_user_vm(client: AsyncClient, auth_headers: dict, db_session: AsyncSession):
+async def test_access_other_user_vm(
+    client: AsyncClient, auth_headers: dict, db_session: AsyncSession
+):
     other_user = User(
         username="other",
         hashed_password="hash",

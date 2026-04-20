@@ -1,6 +1,8 @@
 import logging
 import sys
+
 from pythonjsonlogger import jsonlogger
+
 from core.config import settings
 
 

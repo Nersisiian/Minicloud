@@ -1,16 +1,20 @@
 ﻿from uuid import UUID
-from fastapi import APIRouter, Depends, HTTPException, status, Request
-from sqlalchemy.ext.asyncio import AsyncSession
+
+from fastapi import APIRouter, Depends, HTTPException, Request, status
 from slowapi import Limiter
 from slowapi.util import get_remote_address
-from db.base import get_db
-from db.models import User, VM
+from sqlalchemy.ext.asyncio import AsyncSession
+
 from api.dependencies import get_current_user
-from api.schemas import VMCreateRequest, VMResponse, TaskResponse, VMCloneRequest
+from api.schemas import (TaskResponse, VMCloneRequest, VMCreateRequest,
+                         VMResponse)
 from core.orchestrator import VMOrchestrator
+from db.base import get_db
+from db.models import VM, User
 
 router = APIRouter(prefix="/vms", tags=["Virtual Machines"])
 limiter = Limiter(key_func=get_remote_address)
+
 
 @router.post("/", response_model=TaskResponse, status_code=status.HTTP_202_ACCEPTED)
 @limiter.limit("5/minute")
@@ -31,6 +35,7 @@ async def create_vm(
     )
     return TaskResponse.model_validate(task)
 
+
 @router.get("/{vm_id}", response_model=VMResponse)
 async def get_vm(
     vm_id: UUID,
@@ -42,7 +47,10 @@ async def get_vm(
         raise HTTPException(status_code=404, detail="VM not found")
     return VMResponse.model_validate(vm)
 
-@router.delete("/{vm_id}", response_model=TaskResponse, status_code=status.HTTP_202_ACCEPTED)
+
+@router.delete(
+    "/{vm_id}", response_model=TaskResponse, status_code=status.HTTP_202_ACCEPTED
+)
 async def delete_vm(
     vm_id: UUID,
     current_user: User = Depends(get_current_user),
@@ -59,7 +67,10 @@ async def delete_vm(
     )
     return TaskResponse.model_validate(task)
 
-@router.post("/{vm_id}/pause", response_model=TaskResponse, status_code=status.HTTP_202_ACCEPTED)
+
+@router.post(
+    "/{vm_id}/pause", response_model=TaskResponse, status_code=status.HTTP_202_ACCEPTED
+)
 async def pause_vm(
     vm_id: UUID,
     current_user: User = Depends(get_current_user),
@@ -80,7 +91,10 @@ async def pause_vm(
     )
     return TaskResponse.model_validate(task)
 
-@router.post("/{vm_id}/resume", response_model=TaskResponse, status_code=status.HTTP_202_ACCEPTED)
+
+@router.post(
+    "/{vm_id}/resume", response_model=TaskResponse, status_code=status.HTTP_202_ACCEPTED
+)
 async def resume_vm(
     vm_id: UUID,
     current_user: User = Depends(get_current_user),
@@ -101,7 +115,10 @@ async def resume_vm(
     )
     return TaskResponse.model_validate(task)
 
-@router.post("/{vm_id}/clone", response_model=TaskResponse, status_code=status.HTTP_202_ACCEPTED)
+
+@router.post(
+    "/{vm_id}/clone", response_model=TaskResponse, status_code=status.HTTP_202_ACCEPTED
+)
 async def clone_vm(
     vm_id: UUID,
     clone_req: VMCloneRequest,

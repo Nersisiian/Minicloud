@@ -1,9 +1,11 @@
 import uuid
+from unittest.mock import AsyncMock, patch
+
 import pytest
-from unittest.mock import patch, AsyncMock
 from sqlalchemy.ext.asyncio import AsyncSession
+
 from core.orchestrator import VMOrchestrator
-from db.models import User, VM, Task, TaskStatus
+from db.models import VM, Task, TaskStatus, User
 
 
 @pytest.mark.asyncio
@@ -28,7 +30,9 @@ async def test_request_vm_creation_success(db_session: AsyncSession, test_user: 
 
 
 @pytest.mark.asyncio
-async def test_request_vm_creation_duplicate_name(db_session: AsyncSession, test_user: User):
+async def test_request_vm_creation_duplicate_name(
+    db_session: AsyncSession, test_user: User
+):
     vm = VM(
         user_id=test_user.id,
         name="existing",

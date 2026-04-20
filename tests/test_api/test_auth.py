@@ -1,8 +1,9 @@
 import pytest
 from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
-from db.models import User
+
 from core.security import get_password_hash
+from db.models import User
 
 
 @pytest.mark.asyncio
@@ -26,7 +27,11 @@ async def test_register_success(client: AsyncClient, db_session: AsyncSession):
 async def test_register_duplicate_username(client: AsyncClient, test_user: User):
     response = await client.post(
         "/auth/register",
-        json={"username": test_user.username, "password": "pass", "email": "dup@example.com"},
+        json={
+            "username": test_user.username,
+            "password": "pass",
+            "email": "dup@example.com",
+        },
     )
     assert response.status_code == 400
     assert "already registered" in response.json()["detail"]

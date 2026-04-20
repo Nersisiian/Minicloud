@@ -1,24 +1,25 @@
 import asyncio
 import logging
 import uuid
+
 from celery import Task
 from sqlalchemy import select
+
 from db.base import async_session_factory
-from db.models import Task as TaskModel, VM, TaskStatus, Event
+from db.models import VM, Event
+from db.models import Task as TaskModel
+from db.models import TaskStatus
 from libvirt.manager import LibvirtManager
+from observability.metrics import (task_completed_counter, vm_created_counter,
+                                   vm_deleted_counter, vm_operation_failures)
 from workers.celery_app import celery_app
-from observability.metrics import (
-    vm_created_counter,
-    vm_deleted_counter,
-    vm_operation_failures,
-    task_completed_counter,
-)
 
 logger = logging.getLogger(__name__)
 
 
 class DBTask(Task):
     """Base Celery task that updates DB state."""
+
     abstract = True
 
     def on_success(self, retval, task_id, args, kwargs):

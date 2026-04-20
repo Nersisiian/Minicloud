@@ -1,22 +1,26 @@
-﻿from fastapi import FastAPI
+﻿from contextlib import asynccontextmanager
+
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from contextlib import asynccontextmanager
 from slowapi import Limiter, _rate_limit_exceeded_handler
-from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
-from api.routes import auth, vms, tasks
+from slowapi.util import get_remote_address
+
+from api.routes import auth, tasks, vms
+from db.base import engine
 from observability.logging_config import setup_logging
 from observability.metrics import setup_metrics
-from db.base import engine
 
 setup_logging()
 
 limiter = Limiter(key_func=get_remote_address)
 
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     yield
     await engine.dispose()
+
 
 app = FastAPI(
     title="MiniCloud IaaS API",
@@ -41,6 +45,7 @@ app.add_middleware(
 app.include_router(auth.router)
 app.include_router(vms.router)
 app.include_router(tasks.router)
+
 
 @app.get("/health")
 @limiter.exempt

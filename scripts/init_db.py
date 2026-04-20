@@ -1,13 +1,15 @@
 import asyncio
 import sys
+
+from core.security import get_password_hash
 from db.base import async_session_factory
 from db.models import User
-from core.security import get_password_hash
 
 
 async def create_admin():
     async with async_session_factory() as session:
         from sqlalchemy import select
+
         result = await session.execute(select(User).where(User.username == "admin"))
         if result.scalar_one_or_none():
             print("Admin user already exists")

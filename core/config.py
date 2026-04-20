@@ -11,7 +11,9 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
 
     # Database
-    DATABASE_URL: PostgresDsn = "postgresql+asyncpg://postgres:postgres@localhost:5432/minicloud"
+    DATABASE_URL: PostgresDsn = (
+        "postgresql+asyncpg://postgres:postgres@localhost:5432/minicloud"
+    )
 
     # Redis / Celery
     REDIS_URL: RedisDsn = "redis://localhost:6379/0"

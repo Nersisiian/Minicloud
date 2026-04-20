@@ -1,16 +1,14 @@
 import uuid
-from typing import Optional, Dict, Any
-from sqlalchemy.ext.asyncio import AsyncSession
+from typing import Any, Dict, Optional
+
 from sqlalchemy import select
-from db.models import Task, TaskStatus, VM
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from db.models import VM, Task, TaskStatus
 from workers.celery_app import celery_app
-from workers.tasks.vm_tasks import (
-    create_vm_task,
-    delete_vm_task,
-    pause_vm_task,
-    resume_vm_task,
-    clone_vm_task,
-)
+from workers.tasks.vm_tasks import (clone_vm_task, create_vm_task,
+                                    delete_vm_task, pause_vm_task,
+                                    resume_vm_task)
 
 
 class VMOrchestrator:
@@ -79,7 +77,9 @@ class VMOrchestrator:
         )
         return task
 
-    async def request_vm_operation(self, user_id: uuid.UUID, vm_id: uuid.UUID, operation: str) -> Task:
+    async def request_vm_operation(
+        self, user_id: uuid.UUID, vm_id: uuid.UUID, operation: str
+    ) -> Task:
         vm = await self.db.get(VM, vm_id)
         if not vm or vm.user_id != user_id:
             raise ValueError("VM not found")
@@ -98,7 +98,9 @@ class VMOrchestrator:
         )
         return task
 
-    async def request_vm_clone(self, user_id: uuid.UUID, source_vm_id: uuid.UUID, new_name: str) -> Task:
+    async def request_vm_clone(
+        self, user_id: uuid.UUID, source_vm_id: uuid.UUID, new_name: str
+    ) -> Task:
         source_vm = await self.db.get(VM, source_vm_id)
         if not source_vm or source_vm.user_id != user_id:
             raise ValueError("Source VM not found")

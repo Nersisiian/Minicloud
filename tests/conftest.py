@@ -1,18 +1,21 @@
 import asyncio
-import pytest
 from typing import AsyncGenerator, Generator
-from httpx import AsyncClient, ASGITransport
-from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_sessionmaker
+
+import pytest
+from httpx import ASGITransport, AsyncClient
+from sqlalchemy.ext.asyncio import (AsyncSession, async_sessionmaker,
+                                    create_async_engine)
 from sqlalchemy.pool import NullPool
 
-from db.base import Base, get_db
-from db.models import User, VM, Task, Event
 from api.main import app
 from core.config import settings
 from core.security import get_password_hash
+from db.base import Base, get_db
+from db.models import VM, Event, Task, User
 
 # Use an in‑memory SQLite database for tests
 TEST_DATABASE_URL = "sqlite+aiosqlite:///:memory:"
+
 
 @pytest.fixture(scope="session")
 def event_loop() -> Generator:
@@ -20,6 +23,7 @@ def event_loop() -> Generator:
     loop = asyncio.get_event_loop_policy().new_event_loop()
     yield loop
     loop.close()
+
 
 @pytest.fixture(scope="session")
 async def test_engine():
@@ -35,6 +39,7 @@ async def test_engine():
     yield engine
     await engine.dispose()
 
+
 @pytest.fixture
 async def db_session(test_engine) -> AsyncGenerator[AsyncSession, None]:
     """Provide a transactional database session for a test."""
@@ -46,9 +51,11 @@ async def db_session(test_engine) -> AsyncGenerator[AsyncSession, None]:
             yield session
         await session.rollback()
 
+
 @pytest.fixture
 async def client(db_session: AsyncSession) -> AsyncGenerator[AsyncClient, None]:
     """FastAPI test client with overridden DB dependency."""
+
     async def override_get_db():
         yield db_session
 
@@ -57,6 +64,7 @@ async def client(db_session: AsyncSession) -> AsyncGenerator[AsyncClient, None]:
     async with AsyncClient(transport=transport, base_url="http://test") as ac:
         yield ac
     app.dependency_overrides.clear()
+
 
 @pytest.fixture
 async def test_user(db_session: AsyncSession) -> User:
@@ -71,6 +79,7 @@ async def test_user(db_session: AsyncSession) -> User:
     await db_session.refresh(user)
     return user
 
+
 @pytest.fixture
 async def auth_headers(client: AsyncClient, test_user: User) -> dict:
     """Get authentication headers for the test user."""
@@ -80,6 +89,7 @@ async def auth_headers(client: AsyncClient, test_user: User) -> dict:
     )
     token = response.json()["access_token"]
     return {"Authorization": f"Bearer {token}"}
+
 
 @pytest.fixture
 def mock_libvirt(mocker):

@@ -1,8 +1,10 @@
-import uuid
 import enum
-from sqlalchemy import Column, String, JSON, DateTime, ForeignKey, Text, Enum
+import uuid
+
+from sqlalchemy import JSON, Column, DateTime, Enum, ForeignKey, String, Text
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.sql import func
+
 from db.base import Base
 
 
@@ -17,7 +19,9 @@ class Task(Base):
     __tablename__ = "tasks"
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    user_id = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    user_id = Column(
+        UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False
+    )
     task_type = Column(String(64), nullable=False)
     status = Column(Enum(TaskStatus), default=TaskStatus.PENDING, nullable=False)
     input_params = Column(JSON, nullable=True)

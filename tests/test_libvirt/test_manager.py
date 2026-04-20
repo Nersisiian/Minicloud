@@ -1,7 +1,9 @@
+from unittest.mock import AsyncMock, MagicMock, patch
+
 import pytest
-from unittest.mock import patch, MagicMock, AsyncMock
-from libvirt.manager import LibvirtManager
+
 from libvirt.exceptions import LibvirtOperationError
+from libvirt.manager import LibvirtManager
 
 
 @pytest.fixture

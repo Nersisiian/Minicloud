@@ -1,9 +1,10 @@
 import asyncio
 from logging.config import fileConfig
+
+from alembic import context
 from sqlalchemy import pool
 from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
-from alembic import context
 
 # this is the Alembic Config object
 config = context.config
@@ -14,12 +15,14 @@ if config.config_file_name is not None:
 
 # add your model's MetaData object here for 'autogenerate' support
 from db.base import Base
-from db.models import User, VM, Task, Event  # noqa
+from db.models import VM, Event, Task, User  # noqa
 
 target_metadata = Base.metadata
 
 # other values from the config, defined by the needs of env.py
-config.set_main_option("sqlalchemy.url", "postgresql+asyncpg://postgres:postgres@localhost:5432/minicloud")
+config.set_main_option(
+    "sqlalchemy.url", "postgresql+asyncpg://postgres:postgres@localhost:5432/minicloud"
+)
 
 
 def run_migrations_offline() -> None:

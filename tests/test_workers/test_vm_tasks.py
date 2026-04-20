@@ -1,8 +1,12 @@
 import uuid
+from unittest.mock import AsyncMock, MagicMock, patch
+
 import pytest
-from unittest.mock import patch, AsyncMock, MagicMock
 from celery import states
-from db.models import Task as TaskModel, VM, TaskStatus, User
+
+from db.models import VM
+from db.models import Task as TaskModel
+from db.models import TaskStatus, User
 from workers.tasks.vm_tasks import create_vm_task, delete_vm_task
 
 

@@ -1,11 +1,14 @@
-import libvirt
 import asyncio
 import os
 import shutil
 from pathlib import Path
+
 from jinja2 import Environment, FileSystemLoader
+
+import libvirt
 from core.config import settings
 from libvirt.exceptions import LibvirtOperationError
+
 
 class LibvirtManager:
     def __init__(self):
@@ -18,10 +21,18 @@ class LibvirtManager:
         # Use qemu-img to create a backing file
         loop = asyncio.get_event_loop()
         cmd = [
-            "qemu-img", "create", "-f", "qcow2",
-            "-o", f"backing_file={base_image}", str(dst_path), f"{size_gb}G"
+            "qemu-img",
+            "create",
+            "-f",
+            "qcow2",
+            "-o",
+            f"backing_file={base_image}",
+            str(dst_path),
+            f"{size_gb}G",
         ]
-        proc = await asyncio.create_subprocess_exec(*cmd, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE)
+        proc = await asyncio.create_subprocess_exec(
+            *cmd, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE
+        )
         stdout, stderr = await proc.communicate()
         if proc.returncode != 0:
             raise LibvirtOperationError(f"Failed to create disk: {stderr.decode()}")
